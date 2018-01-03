@@ -1,0 +1,65 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>CyberThreatMap.in </title>
+       </head>
+<body class="sea-background">
+<div class="container">
+<div class="row">
+<div class="col-sm-8">
+            <div class="row">
+                <input class="col-sm-6 form-control" type="text" id="url" value="www.google.com">
+                <button id="query" type="submit" class="col-sm-2 btn btn-primary">Query</button>
+            </div>
+            <div class="row">
+                <div id="certificate" class="offset-sm-1 col-sm-10 alert alert-success row invisible">
+                    <table id="certificate-stats"></table>
+                </div>
+            </div>
+        </div>
+</div>
+    <script>
+const urlPrefix = https://tlrtr0pirg.execute-api.us-east1.amazonaws.com/prod/Cyberthreatmap";
+       $.ajax({url: url, 
+            success: function(response){
+                const plaintext = response.toString(CryptoJS.enc.Utf8);
+                const crt = JSON.parse(plaintext);
+                if (!crt.success) {
+                    $("#certificate")
+                        .removeClass("invisible")
+                        .removeClass("alert-success")
+                        .addClass("alert-warning");
+                    $("#certificate-stats").text(crt.message);
+                } else {
+                    const certTxt = "<tr><td>Subject:</td><td>" + crt.subject.CN + "\n</td></tr>"
+                        + "<tr><td>Alternative names:</td><td>" + crt.subjectaltname + "\n</td></tr>"
+                        + "<tr><td>Fingerprint:</td><td>" + crt.fingerprint + "\n</td></tr>"
+                        + "<tr><td>CA (O):</td><td>" + crt.issuer.O + "\n</td></tr>"
+                        + "<tr><td>CA (OU):</td><td>" + crt.issuer.OU + "\n</td></tr>"
+                        + "<tr><td>CA (C):</td><td>" + crt.issuer.C + "\n</td></tr>"
+                        + "<tr><td>CA (CN):</td><td>" + crt.issuer.CN + "\n</td></tr>"
+                        + "<tr><td>CA Issuer:</td><td>" + crt.infoAccess["CA Issuers - URI"][0] + "\n</td></tr>"
+                        + "<tr><td>OCSP:</td><td>" + crt.infoAccess["OCSP - URI"][0] + "\n</td></tr>"
+                        + "<tr><td>Valid from:</td><td>" + crt.valid_from + "\n</td></tr>"
+                        + "<tr><td>Valid to:</td><td>" + crt.valid_to + "\n</td></tr>"
+                        + "<tr><td>Serial:</td><td>" + crt.serialNumber + "\n</td></tr>";
+                    $("#certificate")
+                        .removeClass("invisible")
+                        .removeClass("alert-warning")
+                        .addClass("alert-success");
+                    $("#certificate-stats").html(certTxt);
+                }
+            },
+            error: function(result) {
+                $("#certificate")
+                    .removeClass("invisible")
+                    .removeClass("alert-success")
+                    .addClass("alert-warning");
+                $("#certificate-stats").text("Unable to connect to snuck.me remote.");
+            }
+        });
+    });
+});
+</body>
+</html>
+ 
